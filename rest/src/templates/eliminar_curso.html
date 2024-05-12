@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Curso</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Eliminar Curso</h1>
+    <form id="formulario-eliminacion">
+        <input type="hidden" id="codigo" name="codigo" value="{{ curso.codigo }}">
+        <button type="submit">Eliminar Curso</button>
+    </form>
+
+    <div id="mensaje" class="container"></div>
+
+    <script>
+        document.getElementById('formulario-eliminacion').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar que se envíe el formulario automáticamente
+
+            // Obtener el código del curso a eliminar
+            let codigo = document.getElementById('codigo').value;
+
+            // Enviar la solicitud DELETE al servidor
+            fetch(`/cursos/eliminar/${codigo}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Mostrar mensaje del servidor
+                document.getElementById('mensaje').textContent = data.mensaje;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Cursos</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <!-- Contenedor para mostrar mensajes del servidor -->
+    <div id="mensaje" class="container"></div>
+    
+    <h1>Lista de Cursos</h1>
+    <table id="tabla-cursos">
+        <!-- Encabezados de la tabla -->
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Créditos</th>
+            <th>Acciones</th>
+        </tr>
+        <!-- Filas de la tabla se generarán dinámicamente con JavaScript -->
+    </table>
+    
+    <!-- Botón para refrescar la lista de cursos -->
+    <div class="container">
+        <button onclick="refrescarCursos()">Refrescar</button>
+    </div>
+    
+    <!-- Enlace para agregar un nuevo curso -->
+    <div class="container">
+        <a href="/curso/agregar" class="btn">Agregar Nuevo Curso</a>
+    </div>
+
+    <script>
+        // Función para refrescar la lista de cursos
+        function refrescarCursos() {
+            fetch('/cursos', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                // Limpiar la tabla antes de agregar las filas nuevas
+                document.getElementById('tabla-cursos').innerHTML = '';
+                // Iterar sobre los cursos recibidos y agregar una fila por cada uno
+                data.cursos.forEach(curso => {
+                    // Crear una nueva fila de la tabla
+                    let fila = document.createElement('tr');
+                    // Crear celdas para cada atributo del curso
+                    let codigo = document.createElement('td');
+                    codigo.textContent = curso.codigo;
+                    let nombre = document.createElement('td');
+                    nombre.textContent = curso.nombre;
+                    let creditos = document.createElement('td');
+                    creditos.textContent = curso.creditos;
+                    let acciones = document.createElement('td');
+                    // Crear enlaces para editar y eliminar el curso
+                    let enlaceEditar = document.createElement('a');
+                    enlaceEditar.href = `/cursos/${curso.codigo}/editar`;
+                    enlaceEditar.textContent = 'Editar';
+                    enlaceEditar.classList.add('btn');
+                    let enlaceEliminar = document.createElement('a');
+                    enlaceEliminar.href = `/cursos/eliminar/${curso.codigo}`;
+                    enlaceEliminar.textContent = 'Eliminar';
+                    enlaceEliminar.classList.add('btn');
+                    // Agregar los enlaces a la celda de acciones
+                    acciones.appendChild(enlaceEditar);
+                    acciones.appendChild(enlaceEliminar);
+                    // Agregar las celdas a la fila
+                    fila.appendChild(codigo);
+                    fila.appendChild(nombre);
+                    fila.appendChild(creditos);
+                    fila.appendChild(acciones);
+                    // Agregar la fila a la tabla
+                    document.getElementById('tabla-cursos').appendChild(fila);
+                });
+                // Mostrar mensaje del servidor si existe
+                document.getElementById('mensaje').textContent = data.mensaje;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Llamar a la función para cargar los cursos al cargar la página
+        refrescarCursos();
+    </script>
+</body>
+</html>
