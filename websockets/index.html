@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket con Socket.IO</title>
+</head>
+<body>
+  <input type="text" id="mensajeInput" placeholder="Escribe un mensaje">
+  <button id="enviarBtn">Enviar</button>
+  <ul id="mensajes"></ul>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const mensajeInput = document.getElementById('mensajeInput');
+    const enviarBtn = document.getElementById('enviarBtn');
+    const mensajesList = document.getElementById('mensajes');
+
+    enviarBtn.addEventListener('click', () => {
+      const mensaje = mensajeInput.value;
+      socket.emit('mensaje', mensaje);
+      mensajeInput.value = '';
+    });
+
+    socket.on('mensaje', (mensaje) => {
+      const item = document.createElement('li');
+      item.textContent = mensaje;
+      mensajesList.appendChild(item);
+    });
+  </script>
+</body>
+</html>
